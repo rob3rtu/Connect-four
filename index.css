@@ -10,6 +10,12 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
+    background: #74ebd5;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(45deg, #ACB6E5, #74ebd5);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(45deg, #ACB6E5, #74ebd5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: rgb(26, 26, 26);
+
+
 }
 
 .board {
@@ -60,4 +66,44 @@ svg {
     width: 100vw;
     font-size: 3vw;
     margin-bottom: 20px;
+}
+
+.hello {
+    font-size: 2.5vw;
+    background: rgb(255, 255, 255);
+    position: absolute;
+    padding: 15px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.hello h1 {
+    font-weight: 100;
+}
+
+.title {
+    text-align: center;
+    font-family: sans-serif;
+}
+
+button {
+    border-radius: 10px;
+    border: none;
+    background: #277CC6;
+    color: blanchedalmond;
+    padding: 10px;
+    margin-top: 20px;
+    outline: none;
+}
+
+.restart, .board {
+    display: none;
+}
+
+h2 {
+    margin-bottom: 50px;
+    font-size: 1.6rem;
 }

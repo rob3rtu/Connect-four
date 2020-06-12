@@ -80,6 +80,8 @@ function puneBila( nr ) {
     let i;
     nr--
 
+    
+
     for(i = 5; i >= 0; i--) 
         if( mat[i][nr].innerHTML != '0' ) {
             mat[i][nr].innerHTML = '0';
@@ -99,6 +101,9 @@ function puneBila( nr ) {
            } 
            
         color++;
+        if( document.querySelector('.nextTurn').innerHTML == 'yellow' )
+            document.querySelector('.nextTurn').innerHTML = 'red';
+        else document.querySelector('.nextTurn').innerHTML = 'yellow';
 
         console.log(mat[i][nr].style.fill);
    }
@@ -108,55 +113,67 @@ function puneBila( nr ) {
 //de facut functia de verificat win
 function verifica() {
     let i, j;
+    let egal = true;
 
-    //pe linii
+   eEgal: for(i = 0; i < 6; i++)
+            for(j = 0; j < 7; j++)
+                if( matVerif[i][j] == 0 ) {
+                    egal = false;
+                    break eEgal;
+                }
+
+    if( egal ){
+        reset('draw');
+    }else {
+        //pe linii
     peLinii: for(i = 0; i < 6; i++)
-                for(j = 0; j < 4; j++)
-                    if( matVerif[i][j] == matVerif[i][j + 1] && 
-                        matVerif[i][j] == matVerif[i][j + 2] && 
-                        matVerif[i][j] == matVerif[i][j + 3] && 
-                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                      ) {
-                         reset( mat[i][j].style.fill );
-                         break peLinii;
-                      }
+    for(j = 0; j < 4; j++)
+        if( matVerif[i][j] == matVerif[i][j + 1] && 
+            matVerif[i][j] == matVerif[i][j + 2] && 
+            matVerif[i][j] == matVerif[i][j + 3] && 
+            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+          ) {
+             reset( mat[i][j].style.fill );
+             break peLinii;
+          }
 
-    //pe coloane
-    peColoane: for(j = 0; j < 7; j++)
-                    for(i = 0; i < 3; i++)
-                      if( matVerif[i][j] == matVerif[i + 1][j] && 
-                          matVerif[i][j] == matVerif[i + 2][j] && 
-                          matVerif[i][j] == matVerif[i + 3][j] && 
-                         (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                       ) {
-                        reset( mat[i][j].style.fill );
-                        break peColoane;
-                       }
+//pe coloane
+peColoane: for(j = 0; j < 7; j++)
+        for(i = 0; i < 3; i++)
+          if( matVerif[i][j] == matVerif[i + 1][j] && 
+              matVerif[i][j] == matVerif[i + 2][j] && 
+              matVerif[i][j] == matVerif[i + 3][j] && 
+             (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+           ) {
+            reset( mat[i][j].style.fill );
+            break peColoane;
+           }
 
-    //pe dagonale spre st
-    peDiagonaleSt: for(i = 0; i < 3; i++)
-                       for(j = 0; j < 4; j++) 
-                            if( 
-                                matVerif[i][j] == matVerif[i + 1][j + 1] && 
-                                matVerif[i][j] == matVerif[i + 2][j + 2] && 
-                                matVerif[i][j] == matVerif[i + 3][j + 3] && 
-                                (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                             ) {
-                                reset( mat[i][j].style.fill );
-                                break peDiagonaleSt;
-                             }
-    //pe diagonale spre dr
-    peDiagonaleDr: for(i = 0; i < 3; i++)
-                        for(j = 6; j >= 3; j--)
-                             if( 
-                                matVerif[i][j] == matVerif[i + 1][j - 1] && 
-                                matVerif[i][j] == matVerif[i + 2][j - 2] && 
-                                matVerif[i][j] == matVerif[i + 3][j - 3] && 
-                                (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                              ) {
-                                reset( mat[i][j].style.fill );
-                                break peDiagonaleDr;
-                              }
+//pe dagonale spre st
+peDiagonaleSt: for(i = 0; i < 3; i++)
+           for(j = 0; j < 4; j++) 
+                if( 
+                    matVerif[i][j] == matVerif[i + 1][j + 1] && 
+                    matVerif[i][j] == matVerif[i + 2][j + 2] && 
+                    matVerif[i][j] == matVerif[i + 3][j + 3] && 
+                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                 ) {
+                    reset( mat[i][j].style.fill );
+                    break peDiagonaleSt;
+                 }
+//pe diagonale spre dr
+peDiagonaleDr: for(i = 0; i < 3; i++)
+            for(j = 6; j >= 3; j--)
+                 if( 
+                    matVerif[i][j] == matVerif[i + 1][j - 1] && 
+                    matVerif[i][j] == matVerif[i + 2][j - 2] && 
+                    matVerif[i][j] == matVerif[i + 3][j - 3] && 
+                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                  ) {
+                    reset( mat[i][j].style.fill );
+                    break peDiagonaleDr;
+                  }
+    }
 
 }
 
@@ -167,7 +184,11 @@ function reset(winner) {
 
     if(winner == 'red')
     document.querySelector('.redScore').innerHTML = +document.querySelector('.redScore').innerHTML + 1;
-    else  document.querySelector('.yellowScore').innerHTML = +document.querySelector('.yellowScore').innerHTML + 1;
+    else if( winner == 'draw' ) {
+        document.querySelector('.who').innerHTML = 'nobody';
+        document.querySelector('.message').style.backgroundColor = 'white';
+    }
+    else document.querySelector('.yellowScore').innerHTML = +document.querySelector('.yellowScore').innerHTML + 1;
 
     setTimeout( () => {
         for(i = 0; i < 6; i++)
@@ -181,3 +202,32 @@ function reset(winner) {
 }
 
 //de rezolvat cu coloanele pt desktop!!
+
+//play button
+let buton = document.querySelector('.buton');
+
+buton.addEventListener('click', () => {
+    document.querySelector('.hello').style.display = 'none';
+    document.querySelector('.restart').style.display = 'block';
+    document.querySelector('.board').style.display = 'block';
+});
+
+//restart button
+let restartBtn = document.querySelector('.restart');
+
+restartBtn.addEventListener('click', () => {
+    let i, j;
+
+    for(i = 0; i < 6; i++)
+    for(j = 0; j < 7; j++) {
+        matVerif[i][j] = 0;
+        mat[i][j].innerHTML = '1';
+        mat[i][j].style.fill = '#2468A4';
+    }
+
+    color = 0;
+    document.querySelector('.nextTurn').innerHTML = 'yellow';
+
+    document.querySelector('.redScore').innerHTML = 0;
+    document.querySelector('.yellowScore').innerHTML = 0;
+});
