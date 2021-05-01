@@ -107,3 +107,12 @@ h2 {
     margin-bottom: 50px;
     font-size: 1.6rem;
 }
+
+.wall {
+    width: 100vw;
+    height: 100vh;
+    background: #277CC6;
+    position: absolute;
+    display: none;
+    opacity: 0;
+}

@@ -180,6 +180,7 @@ peDiagonaleDr: for(i = 0; i < 3; i++)
 function reset(winner) {
     document.querySelector('.who').innerHTML = winner;
     document.querySelector('.message').style.display = 'block';
+    document.querySelector('.wall').style.display = 'block';
     document.querySelector('.message').style.backgroundColor = `${winner}`;
 
     if(winner == 'red')
@@ -198,6 +199,7 @@ function reset(winner) {
                 mat[i][j].style.fill = '#2468A4';
             }
             document.querySelector('.message').style.display = 'none';
+            document.querySelector('.wall').style.display = 'none';
     }, 2000 );
 }
 
