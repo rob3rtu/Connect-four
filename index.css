@@ -20,9 +20,9 @@ body {
 
 .board {
     position: relative;
-    width: 100%;
-    max-height: 90vh;
-    max-width: 90vw;
+    width: 90%;
+    max-height: 771px;
+    max-width: 915px;
 }
 
 .coloane {
@@ -49,6 +49,7 @@ svg {
 
 .message {
     position: absolute;
+    top: 200px;
     background: rgb(252, 252, 252);
     color: rgb(36, 36, 36);
     letter-spacing: 2px;
@@ -116,3 +117,31 @@ h2 {
     display: none;
     opacity: 0;
 }
+
+.btns {
+    display: flex;
+    width: 50vw;
+    justify-content: space-between;
+}
+
+@media screen and (min-width: 800px) {
+    .score {
+      display: none;
+    }
+
+    .restart {
+        position: absolute;
+        top: 50vh;
+        left: 50px;
+    }
+
+    .undo {
+        position: absolute;
+        top: 50vh;
+        right: 50px;
+    }
+
+    h2 {
+        margin: 10px;
+    }
+  }

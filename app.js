@@ -19,6 +19,8 @@ for(let i = 0; i < 6; i++)
     for(let j = 0; j < 7; j++)
         matVerif[i][j] = 0;
 
+let ultim_i, ultim_j;
+
 //prima linie
 mat[0][0] = document.getElementById('Ellipse 1');
 mat[0][1] = document.getElementById('Ellipse 7');
@@ -80,8 +82,6 @@ function puneBila( nr ) {
     let i;
     nr--
 
-    
-
     for(i = 5; i >= 0; i--) 
         if( mat[i][nr].innerHTML != '0' ) {
             mat[i][nr].innerHTML = '0';
@@ -106,25 +106,20 @@ function puneBila( nr ) {
         else document.querySelector('.nextTurn').innerHTML = 'yellow';
 
         console.log(mat[i][nr].style.fill);
+        ultim_i = i;
+        ultim_j = nr;
    }
 
 }
+
 
 //de facut functia de verificat win
 function verifica() {
     let i, j;
     let egal = true;
+    let win = false;
 
-   eEgal: for(i = 0; i < 6; i++)
-            for(j = 0; j < 7; j++)
-                if( matVerif[i][j] == 0 ) {
-                    egal = false;
-                    break eEgal;
-                }
-
-    if( egal ){
-        reset('draw');
-    }else {
+   
         //pe linii
     peLinii: for(i = 0; i < 6; i++)
     for(j = 0; j < 4; j++)
@@ -134,6 +129,7 @@ function verifica() {
             (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
           ) {
              reset( mat[i][j].style.fill );
+             win = true;
              break peLinii;
           }
 
@@ -146,6 +142,7 @@ peColoane: for(j = 0; j < 7; j++)
              (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
            ) {
             reset( mat[i][j].style.fill );
+            win = true;
             break peColoane;
            }
 
@@ -159,6 +156,7 @@ peDiagonaleSt: for(i = 0; i < 3; i++)
                     (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
                  ) {
                     reset( mat[i][j].style.fill );
+                    win = true;
                     break peDiagonaleSt;
                  }
 //pe diagonale spre dr
@@ -171,9 +169,22 @@ peDiagonaleDr: for(i = 0; i < 3; i++)
                     (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
                   ) {
                     reset( mat[i][j].style.fill );
+                    win = true;
                     break peDiagonaleDr;
                   }
-    }
+
+       if( !win ) {
+        eEgal: for(i = 0; i < 6; i++)
+        for(j = 0; j < 7; j++)
+            if( matVerif[i][j] == 0 ) {
+                egal = false;
+                break eEgal;
+            }
+
+            if( egal ){
+                reset('draw');
+            } 
+       }
 
 }
 
@@ -203,7 +214,6 @@ function reset(winner) {
     }, 2000 );
 }
 
-//de rezolvat cu coloanele pt desktop!!
 
 //play button
 let buton = document.querySelector('.buton');
@@ -232,4 +242,16 @@ restartBtn.addEventListener('click', () => {
 
     document.querySelector('.redScore').innerHTML = 0;
     document.querySelector('.yellowScore').innerHTML = 0;
+});
+
+//Cod 2022
+let undo = document.querySelector('.undo');
+undo.addEventListener('click', () => {
+                matVerif[ultim_i][ultim_j] = 0;
+                mat[ultim_i][ultim_j].innerHTML = '1';
+                mat[ultim_i][ultim_j].style.fill = '#2468A4';
+                color--;
+                if( document.querySelector('.nextTurn').innerHTML == 'yellow' )
+                    document.querySelector('.nextTurn').innerHTML = 'red';
+                else document.querySelector('.nextTurn').innerHTML = 'yellow';
 });
