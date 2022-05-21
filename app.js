@@ -17,7 +17,7 @@ for(let i = 0; i < 6; i++) {
 //mat de frecventa
 for(let i = 0; i < 6; i++)
     for(let j = 0; j < 7; j++)
-        matVerif[i][j] = 0;
+        matVerif[i][j] = 0;         //O sa pun 1 pt galben si 2 pt rosu
 
 let ultim_i, ultim_j;
 
@@ -83,12 +83,13 @@ function puneBila( nr ) {
     nr--
 
     for(i = 5; i >= 0; i--) 
-        if( mat[i][nr].innerHTML != '0' ) {
+        if( mat[i][nr].innerHTML != '0' ) {     //0 inseamna ca am bila pe poz aia
+            // console.log(mat[i][nr].innerHTML);
             mat[i][nr].innerHTML = '0';
             break;
         }
 
-    console.log( i );
+    // console.log( i );
     
    if( i >= 0 ) {
        if( color % 2 == 0 ) {
@@ -105,11 +106,36 @@ function puneBila( nr ) {
             document.querySelector('.nextTurn').innerHTML = 'red';
         else document.querySelector('.nextTurn').innerHTML = 'yellow';
 
-        console.log(mat[i][nr].style.fill);
-        ultim_i = i;
+        // console.log(mat[i][nr].style.fill);
+
+        ultim_i = i;        //pentru functia de undo
         ultim_j = nr;
    }
+}
 
+//functia pentru AI
+function bestMove() {
+    let randomCol;
+    let bestScore = -Infinity;
+    let bestColumn;
+     for(let j = 0; j < 7; j++) {
+        for(let i = 5; i >= 0; i--) {
+            if( mat[i][j].innerHTML != '0' ) {
+                puneBila(j + 1);
+                let score = minimax(matVerif, 0, true);
+                undoFunction();
+                if(score > bestScore) {
+                    bestScore = score;
+                    bestColumn = j;
+                }
+
+                break;  //nu mai am nevoie de coloana asta
+            }
+        }
+    }
+
+    puneBila(bestColumn + 1);
+    verificaAI();
 }
 
 
@@ -183,7 +209,87 @@ peDiagonaleDr: for(i = 0; i < 3; i++)
 
             if( egal ){
                 reset('draw');
-            } 
+            } else {
+                bestMove();
+            }
+       }
+
+    // if(egal && !win) {      //jocul inca merge si vreau sa mute AI
+    //     bestMove();
+    // }
+
+}
+
+function verificaAI() {
+    let i, j;
+    let egal = true;
+    let win = false;
+
+   
+        //pe linii
+    peLinii: for(i = 0; i < 6; i++)
+    for(j = 0; j < 4; j++)
+        if( matVerif[i][j] == matVerif[i][j + 1] && 
+            matVerif[i][j] == matVerif[i][j + 2] && 
+            matVerif[i][j] == matVerif[i][j + 3] && 
+            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+          ) {
+             reset( mat[i][j].style.fill );
+             win = true;
+             break peLinii;
+          }
+
+//pe coloane
+peColoane: for(j = 0; j < 7; j++)
+        for(i = 0; i < 3; i++)
+          if( matVerif[i][j] == matVerif[i + 1][j] && 
+              matVerif[i][j] == matVerif[i + 2][j] && 
+              matVerif[i][j] == matVerif[i + 3][j] && 
+             (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+           ) {
+            reset( mat[i][j].style.fill );
+            win = true;
+            break peColoane;
+           }
+
+//pe dagonale spre st
+peDiagonaleSt: for(i = 0; i < 3; i++)
+           for(j = 0; j < 4; j++) 
+                if( 
+                    matVerif[i][j] == matVerif[i + 1][j + 1] && 
+                    matVerif[i][j] == matVerif[i + 2][j + 2] && 
+                    matVerif[i][j] == matVerif[i + 3][j + 3] && 
+                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                 ) {
+                    reset( mat[i][j].style.fill );
+                    win = true;
+                    break peDiagonaleSt;
+                 }
+//pe diagonale spre dr
+peDiagonaleDr: for(i = 0; i < 3; i++)
+            for(j = 6; j >= 3; j--)
+                 if( 
+                    matVerif[i][j] == matVerif[i + 1][j - 1] && 
+                    matVerif[i][j] == matVerif[i + 2][j - 2] && 
+                    matVerif[i][j] == matVerif[i + 3][j - 3] && 
+                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                  ) {
+                    reset( mat[i][j].style.fill );
+                    win = true;
+                    break peDiagonaleDr;
+                  }
+
+       if( !win ) {
+        eEgal: for(i = 0; i < 6; i++)
+        for(j = 0; j < 7; j++)
+            if( matVerif[i][j] == 0 ) {
+                egal = false;
+                break eEgal;
+            }
+
+            if( egal ){
+                reset('draw');
+            }
        }
 
 }
@@ -211,6 +317,7 @@ function reset(winner) {
             }
             document.querySelector('.message').style.display = 'none';
             document.querySelector('.wall').style.display = 'none';
+            color = 0;
     }, 2000 );
 }
 
@@ -255,3 +362,37 @@ undo.addEventListener('click', () => {
                     document.querySelector('.nextTurn').innerHTML = 'red';
                 else document.querySelector('.nextTurn').innerHTML = 'yellow';
 });
+
+function undoFunction () {
+    matVerif[ultim_i][ultim_j] = 0;
+    mat[ultim_i][ultim_j].innerHTML = '1';
+    mat[ultim_i][ultim_j].style.fill = '#2468A4';
+    color--;
+    if( document.querySelector('.nextTurn').innerHTML == 'yellow' )
+        document.querySelector('.nextTurn').innerHTML = 'red';
+    else document.querySelector('.nextTurn').innerHTML = 'yellow';
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+//                                  MINIMAX ALGORITHM                                    //
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+
+//Tree height = 7^42 = 3.119734822845424e+35?
+
+// let h = 1;
+// let p = 42;
+
+// while(p > 0) {
+//     h = h * 7;
+//     p = p - 1;
+// }
+
+// console.log(h);
+
+function minimax(table, depth, isMaximizing) {
+    return 1;
+}
