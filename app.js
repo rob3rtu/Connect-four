@@ -80,7 +80,7 @@ let color = 0;//nr par -> galben ... nr impar -> rosu
 
 function puneBila( nr ) {
     let i;
-    nr--
+    nr--;
 
     for(i = 5; i >= 0; i--) 
         if( mat[i][nr].innerHTML != '0' ) {     //0 inseamna ca am bila pe poz aia
@@ -115,25 +115,35 @@ function puneBila( nr ) {
 
 //functia pentru AI
 function bestMove() {
-    let randomCol;
     let bestScore = -Infinity;
     let bestColumn;
+
+    for(let j = 0; j < 7; j++)
+        for(let i = 5; i >= 0; i--) 
+            if( mat[i][j].innerHTML != '0' ) {
+                bestColumn = j;
+                break;
+            }
+
      for(let j = 0; j < 7; j++) {
         for(let i = 5; i >= 0; i--) {
             if( mat[i][j].innerHTML != '0' ) {
-                puneBila(j + 1);
-                let score = minimax(matVerif, 0, true);
-                undoFunction();
+                // puneBila(j + 1);
+                matVerif[i][j] = 1;
+                let score = minimax(matVerif, 0, false);
+                // undoFunction(i, j);
+                matVerif[i][j] = 0;
                 if(score > bestScore) {
                     bestScore = score;
                     bestColumn = j;
                 }
 
-                break;  //nu mai am nevoie de coloana asta
+                // break;  //nu mai am nevoie de coloana asta
             }
         }
     }
 
+    console.log(bestColumn + 1);
     puneBila(bestColumn + 1);
     verificaAI();
 }
@@ -148,64 +158,64 @@ function verifica() {
    
         //pe linii
     peLinii: for(i = 0; i < 6; i++)
-    for(j = 0; j < 4; j++)
-        if( matVerif[i][j] == matVerif[i][j + 1] && 
-            matVerif[i][j] == matVerif[i][j + 2] && 
-            matVerif[i][j] == matVerif[i][j + 3] && 
-            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-          ) {
-             reset( mat[i][j].style.fill );
-             win = true;
-             break peLinii;
-          }
+                for(j = 0; j < 4; j++)
+                    if( matVerif[i][j] == matVerif[i][j + 1] && 
+                        matVerif[i][j] == matVerif[i][j + 2] && 
+                        matVerif[i][j] == matVerif[i][j + 3] && 
+                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                    ) {
+                        reset( mat[i][j].style.fill );
+                        win = true;
+                        break peLinii;
+                    }
 
 //pe coloane
 peColoane: for(j = 0; j < 7; j++)
-        for(i = 0; i < 3; i++)
-          if( matVerif[i][j] == matVerif[i + 1][j] && 
-              matVerif[i][j] == matVerif[i + 2][j] && 
-              matVerif[i][j] == matVerif[i + 3][j] && 
-             (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-           ) {
-            reset( mat[i][j].style.fill );
-            win = true;
-            break peColoane;
-           }
+            for(i = 0; i < 3; i++)
+            if( matVerif[i][j] == matVerif[i + 1][j] && 
+                matVerif[i][j] == matVerif[i + 2][j] && 
+                matVerif[i][j] == matVerif[i + 3][j] && 
+                (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+            ) {
+                reset( mat[i][j].style.fill );
+                win = true;
+                break peColoane;
+            }
 
 //pe dagonale spre st
 peDiagonaleSt: for(i = 0; i < 3; i++)
-           for(j = 0; j < 4; j++) 
-                if( 
-                    matVerif[i][j] == matVerif[i + 1][j + 1] && 
-                    matVerif[i][j] == matVerif[i + 2][j + 2] && 
-                    matVerif[i][j] == matVerif[i + 3][j + 3] && 
-                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                 ) {
-                    reset( mat[i][j].style.fill );
-                    win = true;
-                    break peDiagonaleSt;
-                 }
+                for(j = 0; j < 4; j++) 
+                        if( 
+                            matVerif[i][j] == matVerif[i + 1][j + 1] && 
+                            matVerif[i][j] == matVerif[i + 2][j + 2] && 
+                            matVerif[i][j] == matVerif[i + 3][j + 3] && 
+                            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                        ) {
+                            reset( mat[i][j].style.fill );
+                            win = true;
+                            break peDiagonaleSt;
+                        }
 //pe diagonale spre dr
 peDiagonaleDr: for(i = 0; i < 3; i++)
-            for(j = 6; j >= 3; j--)
-                 if( 
-                    matVerif[i][j] == matVerif[i + 1][j - 1] && 
-                    matVerif[i][j] == matVerif[i + 2][j - 2] && 
-                    matVerif[i][j] == matVerif[i + 3][j - 3] && 
-                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                  ) {
-                    reset( mat[i][j].style.fill );
-                    win = true;
-                    break peDiagonaleDr;
-                  }
+                for(j = 6; j >= 3; j--)
+                    if( 
+                        matVerif[i][j] == matVerif[i + 1][j - 1] && 
+                        matVerif[i][j] == matVerif[i + 2][j - 2] && 
+                        matVerif[i][j] == matVerif[i + 3][j - 3] && 
+                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                    ) {
+                        reset( mat[i][j].style.fill );
+                        win = true;
+                        break peDiagonaleDr;
+                    }
 
        if( !win ) {
         eEgal: for(i = 0; i < 6; i++)
-        for(j = 0; j < 7; j++)
-            if( matVerif[i][j] == 0 ) {
-                egal = false;
-                break eEgal;
-            }
+                for(j = 0; j < 7; j++)
+                    if( matVerif[i][j] == 0 ) {
+                        egal = false;
+                        break eEgal;
+                    }
 
             if( egal ){
                 reset('draw');
@@ -228,64 +238,64 @@ function verificaAI() {
    
         //pe linii
     peLinii: for(i = 0; i < 6; i++)
-    for(j = 0; j < 4; j++)
-        if( matVerif[i][j] == matVerif[i][j + 1] && 
-            matVerif[i][j] == matVerif[i][j + 2] && 
-            matVerif[i][j] == matVerif[i][j + 3] && 
-            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-          ) {
-             reset( mat[i][j].style.fill );
-             win = true;
-             break peLinii;
-          }
+                for(j = 0; j < 4; j++)
+                    if( matVerif[i][j] == matVerif[i][j + 1] && 
+                        matVerif[i][j] == matVerif[i][j + 2] && 
+                        matVerif[i][j] == matVerif[i][j + 3] && 
+                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                    ) {
+                        reset( mat[i][j].style.fill );
+                        win = true;
+                        break peLinii;
+                    }
 
 //pe coloane
 peColoane: for(j = 0; j < 7; j++)
-        for(i = 0; i < 3; i++)
-          if( matVerif[i][j] == matVerif[i + 1][j] && 
-              matVerif[i][j] == matVerif[i + 2][j] && 
-              matVerif[i][j] == matVerif[i + 3][j] && 
-             (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-           ) {
-            reset( mat[i][j].style.fill );
-            win = true;
-            break peColoane;
-           }
+            for(i = 0; i < 3; i++)
+            if( matVerif[i][j] == matVerif[i + 1][j] && 
+                matVerif[i][j] == matVerif[i + 2][j] && 
+                matVerif[i][j] == matVerif[i + 3][j] && 
+                (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+            ) {
+                reset( mat[i][j].style.fill );
+                win = true;
+                break peColoane;
+              }
 
 //pe dagonale spre st
 peDiagonaleSt: for(i = 0; i < 3; i++)
-           for(j = 0; j < 4; j++) 
-                if( 
-                    matVerif[i][j] == matVerif[i + 1][j + 1] && 
-                    matVerif[i][j] == matVerif[i + 2][j + 2] && 
-                    matVerif[i][j] == matVerif[i + 3][j + 3] && 
-                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                 ) {
-                    reset( mat[i][j].style.fill );
-                    win = true;
-                    break peDiagonaleSt;
-                 }
+                for(j = 0; j < 4; j++) 
+                        if( 
+                            matVerif[i][j] == matVerif[i + 1][j + 1] && 
+                            matVerif[i][j] == matVerif[i + 2][j + 2] && 
+                            matVerif[i][j] == matVerif[i + 3][j + 3] && 
+                            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                        ) {
+                            reset( mat[i][j].style.fill );
+                            win = true;
+                            break peDiagonaleSt;
+                        }
 //pe diagonale spre dr
 peDiagonaleDr: for(i = 0; i < 3; i++)
-            for(j = 6; j >= 3; j--)
-                 if( 
-                    matVerif[i][j] == matVerif[i + 1][j - 1] && 
-                    matVerif[i][j] == matVerif[i + 2][j - 2] && 
-                    matVerif[i][j] == matVerif[i + 3][j - 3] && 
-                    (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
-                  ) {
-                    reset( mat[i][j].style.fill );
-                    win = true;
-                    break peDiagonaleDr;
-                  }
+                for(j = 6; j >= 3; j--)
+                    if( 
+                        matVerif[i][j] == matVerif[i + 1][j - 1] && 
+                        matVerif[i][j] == matVerif[i + 2][j - 2] && 
+                        matVerif[i][j] == matVerif[i + 3][j - 3] && 
+                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                    ) {
+                        reset( mat[i][j].style.fill );
+                        win = true;
+                        break peDiagonaleDr;
+                    }
 
        if( !win ) {
         eEgal: for(i = 0; i < 6; i++)
-        for(j = 0; j < 7; j++)
-            if( matVerif[i][j] == 0 ) {
-                egal = false;
-                break eEgal;
-            }
+                for(j = 0; j < 7; j++)
+                    if( matVerif[i][j] == 0 ) {
+                        egal = false;
+                        break eEgal;
+                    }
 
             if( egal ){
                 reset('draw');
@@ -363,10 +373,10 @@ undo.addEventListener('click', () => {
                 else document.querySelector('.nextTurn').innerHTML = 'yellow';
 });
 
-function undoFunction () {
-    matVerif[ultim_i][ultim_j] = 0;
-    mat[ultim_i][ultim_j].innerHTML = '1';
-    mat[ultim_i][ultim_j].style.fill = '#2468A4';
+function undoFunction (uli, ulj) {
+    matVerif[uli][ulj] = 0;
+    mat[uli][ulj].innerHTML = '1';
+    mat[uli][ulj].style.fill = '#2468A4';
     color--;
     if( document.querySelector('.nextTurn').innerHTML == 'yellow' )
         document.querySelector('.nextTurn').innerHTML = 'red';
@@ -393,6 +403,118 @@ function undoFunction () {
 
 // console.log(h);
 
-function minimax(table, depth, isMaximizing) {
-    return 1;
+let scores = {red: 1, yellow: -1, draw: 0};
+//Ai joaca cu rosu
+
+function minimax(board, depth, isMaximizing) {
+    if(depth < 3) {
+        console.log('?');
+        let result = verificaMiniMax(board);
+        if(result != null) {
+            return scores[result];
+        }
+
+        if(isMaximizing) {
+            let bestScore = -Infinity;
+            for(let j = 0; j < 7; j++) {
+                for(let i = 5; i >= 0; i--) {
+                    if( mat[i][j].innerHTML != '0' ) {
+                        // puneBila(j + 1);
+                        board[i][j] = 1;
+                        let score = minimax(board, depth + 1, false);
+                        board[i][j] = 0;
+                        //  undoFunction(i, j);
+                        bestScore = Math.max(score, bestScore);
+                        // break;
+                    }
+                }
+            }
+            return bestScore;
+        } else {
+            let bestScore = Infinity;
+            for(let j = 0; j < 7; j++) {
+                for(let i = 5; i >= 0; i--) {
+                    if( mat[i][j].innerHTML != '0' ) {
+                        // puneBila(j + 1);
+                        board[i][j] = 2;
+                        let score = minimax(board, depth + 1, true);
+                        board[i][j] = 0;
+                        // undoFunction(i, j);
+                        bestScore = Math.min(score, bestScore);
+                        // break;
+                    }
+                }
+            }
+            return bestScore;
+        }
+    }
+}
+
+//return the winner/draw/null
+function verificaMiniMax(matVerif) {
+    let i, j;
+    let egal = true;
+    let win = false;
+
+   
+        //pe linii
+    peLinii: for(i = 0; i < 6; i++)
+                for(j = 0; j < 4; j++)
+                    if( matVerif[i][j] == matVerif[i][j + 1] && 
+                        matVerif[i][j] == matVerif[i][j + 2] && 
+                        matVerif[i][j] == matVerif[i][j + 3] && 
+                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                    ) {
+                        return matVerif[i][j] == 1 ? 'red' : 'yellow';
+                    }
+
+//pe coloane
+peColoane: for(j = 0; j < 7; j++)
+            for(i = 0; i < 3; i++)
+            if( matVerif[i][j] == matVerif[i + 1][j] && 
+                matVerif[i][j] == matVerif[i + 2][j] && 
+                matVerif[i][j] == matVerif[i + 3][j] && 
+                (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+            ) {
+                return matVerif[i][j] == 1 ? 'red' : 'yellow';
+            }
+
+//pe dagonale spre st
+peDiagonaleSt: for(i = 0; i < 3; i++)
+                for(j = 0; j < 4; j++) 
+                        if( 
+                            matVerif[i][j] == matVerif[i + 1][j + 1] && 
+                            matVerif[i][j] == matVerif[i + 2][j + 2] && 
+                            matVerif[i][j] == matVerif[i + 3][j + 3] && 
+                            (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                        ) {
+                            return matVerif[i][j] == 1 ? 'red' : 'yellow';
+                        }
+//pe diagonale spre dr
+peDiagonaleDr: for(i = 0; i < 3; i++)
+                for(j = 6; j >= 3; j--)
+                    if( 
+                        matVerif[i][j] == matVerif[i + 1][j - 1] && 
+                        matVerif[i][j] == matVerif[i + 2][j - 2] && 
+                        matVerif[i][j] == matVerif[i + 3][j - 3] && 
+                        (matVerif[i][j] == 1 || matVerif[i][j] == 2) 
+                    ) {
+                        return matVerif[i][j] == 1 ? 'red' : 'yellow';
+                    }
+
+       if( !win ) {
+        eEgal: for(i = 0; i < 6; i++)
+                for(j = 0; j < 7; j++)
+                    if( matVerif[i][j] == 0 ) {
+                        egal = false;
+                        break eEgal;
+                    }
+
+            if( egal ){
+                return 'draw';
+            } else {
+                return null;
+            }
+       }
+
 }
