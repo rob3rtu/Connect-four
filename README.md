@@ -7,4 +7,4 @@ The full algo would require a tree of height 7^42, wich is a very very large num
 
 *Important*
 Because of the height = 3, the algorithm can be easily beaten! 
-Also, it takes arounf 5sec to make a move.
+Also, it takes around 5sec to make a move.
